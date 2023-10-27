@@ -2,6 +2,12 @@
 
 This library implements a couple of utility functions for communication with fault-injection tools such as the Pico Debug'n'Dump based glitchers.
 
+## Install
+
+```bash
+python3 setup.py install
+```
+
 ## Glitcher
 
 A simple class that automatically connects and interfaces with glitchers that use the **Simple Glitcher Protocol**.
@@ -9,6 +15,7 @@ A simple class that automatically connects and interfaces with glitchers that us
 ### Usage
 
 ```python
+from glitchlib import Glitcher
 # Automatically opens all USB serial devices, sends the ID command, and checks whether the device identifies itself as a glitcher.
 g = Glitcher()
 
@@ -38,6 +45,7 @@ A utility library to manage, store and visualize glitching results.
 First we need to initialize a GlitchDataCollection:
 
 ```python
+from glitchlib import GlitchDataCollection
 gdc = GlitchDataCollection()
 ```
 
