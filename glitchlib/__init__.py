@@ -31,18 +31,11 @@ def find_serial_with_id(id):
             r = s.read()
             if r == id:
                 return s
+            s.close()
     return None
 
 class Glitcher:
     def __init__(self, path=None):
-        pathstart = ""
-        if platform == "linux" or platform == "linux2":
-            pathstart = "ttyUSB"
-        elif platform == "darwin":
-            pathstart = "cu.usb"
-        elif platform == "win32":
-            raise ValueError("Unsupported operating system")
-        
         device = None
         if path == None:
             device = find_serial_with_id(b'A')
@@ -51,6 +44,7 @@ class Glitcher:
             s.write(b"Z")
             r = s.read()
             if r != b'A':
+                s.close()
                 raise ValueError("ID command response wrong.")
             device = s
         if not device:
@@ -75,6 +69,47 @@ class Glitcher:
     
     def read(self, size=1):
         return self.device.read(size)
+
+
+class SWDChecker:
+    def __init__(self, path=None):
+        device = None
+        if path == None:
+            device = find_serial_with_id(b'B')
+        else:
+            s = serial.Serial("/dev/" + dev)
+            s.write(b"Z")
+            r = s.read()
+            if r != b'A':
+                s.close()
+                raise ValueError("ID command response wrong.")
+            device = s
+        if not device:
+            raise ValueError("No glitcher found")
+        self.device = device
+        self.device.timeout = 1
+
+    def check_SWD(self):
+        self.flush()
+        self.device.write(b"A")
+        r = self.device.read(1)
+        if r == b"A":
+            return True
+        elif r == b"B":
+            return False
+
+    def check_NRF(self):
+        self.flush()
+        self.device.write(b"B")
+        r = self.device.read(1)
+        if r == b"A":
+            return True
+        else:
+            return False
+
+    def flush(self):
+        if self.device.in_waiting:
+            self.device.read(self.device.in_waiting)
 
 
 class GlitchData:
