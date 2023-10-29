@@ -13,7 +13,7 @@ import pickle
 def find_serial_with_id(id):
     pathstart = ""
     if platform == "linux" or platform == "linux2":
-        pathstart = "ttyUSB"
+        pathstart = "ttyACM"
     elif platform == "darwin":
         pathstart = "cu.usb"
     elif platform == "win32":
